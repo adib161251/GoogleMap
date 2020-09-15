@@ -110,15 +110,15 @@
 		
 		  if('geolocation' in navigator)
 			{
-				console.log("available");
+				//console.log("available");
 				navigator.geolocation.getCurrentPosition(position =>{//begin
 					//console.log(position.coords);
 					curLat=position.coords.latitude;
 					curLng=position.coords.longitude;
-					console.log(curLat);
-					console.log(curLng);
+					//console.log(curLat);
+					//console.log(curLng);
 					const currentLocation = {lat:curLat,lng:curLng};
-					console.log(currentLocation);
+					//console.log(currentLocation);
 					//const home ={lat:23.74217474372772,lng:90.36542549729347};
 					map = new google.maps.Map(document.getElementById("map"), {
 						center: currentLocation,
