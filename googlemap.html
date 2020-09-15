@@ -27,7 +27,7 @@
 			padding: 0;
 		}
 		.modal 
-	    {
+	      	{
 			text-align: center;
 			padding: 0!important;
 		}
@@ -103,48 +103,70 @@
 	
 	<script type="text/javascript">
       let map, marker;
+	  let curLat=0.0, curLng=0.0;
 
       function initMap() 
 		{
-	  
-			const home ={lat:23.74217474372772,lng:90.36542549729347};
-			map = new google.maps.Map(document.getElementById("map"), {
-			  center: home,
-			  zoom: 7
-			});
-			
-			const marker = new google.maps.Marker({position: home, map: map});
-			//returns lat lng
-				map.addListener('click', function(mapsMouseEvent) {
-					console.log("Clicked Elsewhere on Map"+'\n');
-					var latLng= mapsMouseEvent.latLng;
-					var tryy= mapsMouseEvent.latLng.toString();
-					//console.log(tryy);
-					var form= document.getElementById('coordinate');
-					form.value=tryy;
-					map.setZoom(18);
-					$("#myModal").modal();
-				});
 		
-			//centers the marker in 5 sec if moved
-			 map.addListener("center_changed", function (){
-					window.setTimeout(function(){
-					map.panTo(marker.getPosition());
-				}, 	5000);
-			}); 
+		  if('geolocation' in navigator)
+			{
+				console.log("available");
+				navigator.geolocation.getCurrentPosition(position =>{//begin
+					//console.log(position.coords);
+					curLat=position.coords.latitude;
+					curLng=position.coords.longitude;
+					console.log(curLat);
+					console.log(curLng);
+					const currentLocation = {lat:curLat,lng:curLng};
+					console.log(currentLocation);
+					//const home ={lat:23.74217474372772,lng:90.36542549729347};
+					map = new google.maps.Map(document.getElementById("map"), {
+						center: currentLocation,
+						zoom: 7
+					});
+					const marker = new google.maps.Marker({position: currentLocation, map: map}); //Marker will be set on currentLocation
+					
+					//----returns lat lng-----
+					map.addListener('click', function(mapsMouseEvent) {
+						console.log("Clicked Elsewhere on Map"+'\n');
+						var latLng= mapsMouseEvent.latLng;
+						var tryy= mapsMouseEvent.latLng.toString();
+						//console.log(tryy);
+						var form= document.getElementById('coordinate');
+						form.value=tryy;
+						map.setZoom(18);
+						$("#myModal").modal();
+					});
 			
-			//marker click popup and zoom
-			 marker.addListener("click", function(mapsMouseEvent){
-				console.log("Clicked on The Marker"+'\n');
-				var latLng= mapsMouseEvent.latLng;
-				var tryy= mapsMouseEvent.latLng.toString();
-				var form= document.getElementById('coordinate');
-				form.value=tryy;
+					//-----centers the marker in 5 sec if moved-----
+					map.addListener("center_changed", function (){
+						window.setTimeout(function(){
+							map.panTo(marker.getPosition());
+						}, 	5000);
+					}); 
 				
-				map.setZoom(18);
-				$("#myModal").modal(); 
-			 });
-			
+					//------marker click popup and zoom-------
+					marker.addListener("click", function(mapsMouseEvent){
+						console.log("Clicked on The Marker"+'\n');
+						var latLng= mapsMouseEvent.latLng;
+						var tryy= mapsMouseEvent.latLng.toString();
+						var form= document.getElementById('coordinate');
+						form.value=tryy;
+						
+						map.setZoom(18);
+						$("#myModal").modal(); 
+					});
+					
+					
+					
+					
+				}); //end
+				
+			}
+			else
+			{
+				console.log("not available");
+			}			
 	    }
 		function print()
 		{
